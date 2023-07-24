@@ -1,11 +1,10 @@
-name: lint nordvpn proxy dockerfile
+name: Lint VPN Proxy Dockerfile
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
-      - master
     paths-ignore:
       - '.github/**'
 
