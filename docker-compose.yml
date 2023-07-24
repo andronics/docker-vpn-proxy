@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  vpn-proxy:
+    image: andronics/vpn-proxy:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      DNS_SERVERS:  1.1.1.1 1.0.0.1           # Optional - 1.1.1.1 1.0.0.1
+      OPENVPN_LOG_LEVEL: 3                    # Optional - 3 (default), 
+      OPENVPN_PARAMETERS:                     # Optional - empty (default)
+      TZ: Europe/London                       # Optional - Europe/London (default)
+      VPN_CATEGORY: standard                  # Optional - standard (default) / onion / p2p
+      VPN_COUNTRY:                            # Optional - blank (default)
+      VPN_PROTOCOL: udp                       # Optional - udp (default) / tcp
+      VPN_REGION:                             # Optional - blank (default) / americas / asia_pacific / africe_and_middle_east
+    ports:
+      - 1080:1080                             # Socks Proxy - TCP / UDP
+      - 8888:8888/tcp                         # HTTP Proxy - TCP only
+    restart: unless-stopped
+    secrets:
+      - vpn_username
+      - vpn_password
+    sysctls:
+      - net.ipv4.conf.rp_filter: 2            # Full Reverse Path Filtering
+      - net.ipv6.conf.all.disable_ipv6: 1     # Disable IPv6 on all nterfaces
+
+secrets:
+  vpn_password:
+    file: ./vpn_password
+  vpn_username:
+    file: ./vpn_username
