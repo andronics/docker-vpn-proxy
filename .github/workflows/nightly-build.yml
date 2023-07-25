@@ -22,6 +22,8 @@ jobs:
       
       - name: checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: container registry login
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -39,9 +41,13 @@ jobs:
 
       - name: version generation
         run: echo "IMAGE_VERSION=nightly-$(date +%Y%m%d)" >> "$GITHUB_ENV"
+
+      - name: commit count
+        run: echo "COMMIT_COUNT=$(git log --oneline --since '24 hours ago' | wc -l)" >> "$GITHUB_ENV"
       
       - name: build and push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        if: ${{ env.COMMIT_COUNT > 0 }}
         with:
           context: .
           push: true
@@ -49,6 +55,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: inspect image
+        if: ${{ env.COMMIT_COUNT > 0 }}
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_VERSION }}
 
