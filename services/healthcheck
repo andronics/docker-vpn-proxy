@@ -1,0 +1,7 @@
+#!/bin/bash
+STATUS=$( curl -m 10 -s https://api.nordvpn.com/vpn/check/full | jq -r '.["status"]')
+if [[ -n $STATUS && "$STATUS" -eq "Protected" ]]; then
+    exit 0
+else
+    exit 1
+fi

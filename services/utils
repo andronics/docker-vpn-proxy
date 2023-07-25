@@ -1,0 +1,30 @@
+#!/bin/bash
+
+DEBUG=${DEBUG:-"0"}
+
+OVPN_STATUS_FILE=/var/tmp/ovpn_status
+SOCKET="unix-connect:/run/openvpn.sock"
+
+[[ ${DEBUG} != "0" ]] && set -x || true
+
+fatal() {
+  printf "FATAL: %b\n" "$*" >&2
+  exit 1
+}
+
+log() {
+  if [[ $* =~ ^INFO ]]; then
+    printf "%b\n" "$*" >/dev/stderr
+  else
+    printf "INFO: %b\n" "$*" >/dev/stderr
+  fi
+}
+
+write_status_file() {
+  STATUS=$(echo ${1} | grep -oE "(NOT|)CONNECTED")
+  if [[ ${WRITE_OVPN_STATUS} -ne 0 ]]; then
+    echo ${STATUS} >${OVPN_STATUS_FILE}
+    log "HEALTHCHECK: OVPN status (${STATUS}) written to ${OVPN_STATUS_FILE}"
+  fi
+}
+

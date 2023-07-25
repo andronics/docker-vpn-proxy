@@ -40,14 +40,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: tags
-        id: tags
-        run: echo "::set-output name=version::$(date +%Y%m%d)"
+      - name: Image Version
+        run: echo "IMAGE_VERSION=$(date +%Y%m%d-%H%M%S)" >> "$GITHUB_ENV"
       
       - name: Build & Push Docker Image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:v${{ steps.tags.outputs.version }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
