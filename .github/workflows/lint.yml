@@ -1,4 +1,4 @@
-name: VPN Proxy Dockerfile Lint
+name: Dockerfile Lint
 
 on:
   workflow_dispatch:
