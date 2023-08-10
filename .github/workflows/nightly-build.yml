@@ -46,7 +46,7 @@ jobs:
         run: echo "COMMIT_COUNT=$(git log --oneline --since '24 hours ago' | wc -l)" >> "$GITHUB_ENV"
       
       - name: build and push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@be4bf1099eac82f5c455818fc0d5dce491545629
         if: ${{ env.COMMIT_COUNT > 0 }}
         with:
           context: .
