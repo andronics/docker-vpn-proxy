@@ -43,7 +43,7 @@ jobs:
         run: echo "IMAGE_VERSION=nightly-$(date +%Y%m%d)" >> "$GITHUB_ENV"
       
       - name: build and push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@8d2cf95286e3dd3d016d478187b93b57af29fd2d
         with:
           context: .
           push: true
